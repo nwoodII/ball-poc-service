@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ball.Poc.Service.DTOs;
 using Ball.Poc.Service.Services;
+using System;
 
 namespace Ball.Poc.Service.Controllers
 {
@@ -23,17 +20,19 @@ namespace Ball.Poc.Service.Controllers
             _pocService = pocService;
         }
 
-        [HttpGet("poc/{id:int}", Name = nameof(GetCustomer))]
-        public ActionResult<CustomerDto> GetCustomer(int id)
+        [HttpGet("poc/{id:guid}", Name = nameof(GetCustomer))]
+        public ActionResult<CustomerDto> GetCustomer(Guid id)
         {
+            _logger.LogInformation("Inside GetCustomer(int id)");
             var dto = new CustomerDto();
-            dto.Id = id;
+            dto.Id = Guid.NewGuid();
             dto.FirstName = "Nathan";
             dto.LastName = "Woodson";
-            dto.Address = "320 Ren Road";
-            dto.City = "Richmond";
-            dto.State = "VA";
-            dto.Zip = "23231";
+            dto.Address.Line1 = "320 Ren Road";
+            dto.Address.City = "Richmond";
+            dto.Address.State = "VA";
+            dto.Address.Zip = "23231";
+            _logger.LogInformation("Leaving GetCustomer(int id)");
             return dto;
         }
 
@@ -41,8 +40,9 @@ namespace Ball.Poc.Service.Controllers
         [ProducesResponseType(200, Type = typeof(CustomerDto))]        
         public ActionResult<CustomerDto> CreateCustomer(CustomerDto creatCustomerDTO)
         {
+            _logger.LogInformation("Inside CreateCustomer()");
             var dto = _pocService.save(creatCustomerDTO);
-            return CreatedAtAction(nameof(GetCustomer),new { id = creatCustomerDTO.Id}, dto);
+            return CreatedAtAction(nameof(GetCustomer),new { id = dto.Id}, dto);
         }
     }
 }
