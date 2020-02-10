@@ -26,7 +26,7 @@ namespace Ball.Poc.Service
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ball Poc Service API", Version = "v1" });
             });
         }
 
@@ -47,7 +47,7 @@ namespace Ball.Poc.Service
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ball Poc Service API V1");
             });
 
             app.UseRouting();

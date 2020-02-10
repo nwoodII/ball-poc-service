@@ -28,7 +28,12 @@ namespace Ball.Poc.Service.Controllers
         {
             var dto = new CustomerDto();
             dto.Id = id;
-            dto.Address = "test";
+            dto.FirstName = "Nathan";
+            dto.LastName = "Woodson";
+            dto.Address = "320 Ren Road";
+            dto.City = "Richmond";
+            dto.State = "VA";
+            dto.Zip = "23231";
             return dto;
         }
 
