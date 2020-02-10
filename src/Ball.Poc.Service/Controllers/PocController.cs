@@ -37,7 +37,6 @@ namespace Ball.Poc.Service.Controllers
         public ActionResult<CustomerDto> CreateCustomer(CustomerDto creatCustomerDTO)
         {
             var dto = _pocService.save(creatCustomerDTO);
-            //CreatedAtAction()
             return CreatedAtAction(nameof(GetCustomer),new { id = creatCustomerDTO.Id}, dto);
         }
     }
