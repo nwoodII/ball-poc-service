@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Ball.Poc.Repository.Models;
 
 namespace Ball.Poc.Service.DTOs
 {
@@ -10,5 +12,10 @@ namespace Ball.Poc.Service.DTOs
         public string City { get; set; }
         public string State { get; set; } 
         public string Zip { get; set; }
+
+        public static implicit operator AddressDto(Address v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

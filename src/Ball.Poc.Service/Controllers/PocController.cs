@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Ball.Poc.Service.DTOs;
 using Ball.Poc.Service.Services;
 using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Ball.Poc.Service.Controllers
 {
@@ -20,29 +22,48 @@ namespace Ball.Poc.Service.Controllers
             _pocService = pocService;
         }
 
+        [HttpGet("poc")]
+        public async Task<IEnumerable<CustomerDto>> GetCustomers()
+        {
+            _logger.LogInformation("Inside GetCustomers()");
+            IEnumerable<CustomerDto> results = await _pocService.getCustomers("Select * from Customers");
+            _logger.LogInformation("Leaving GetCustomers()");
+            return results;
+        }
+
         [HttpGet("poc/{id:guid}", Name = nameof(GetCustomer))]
-        public ActionResult<CustomerDto> GetCustomer(Guid id)
+        public async Task<ActionResult<CustomerDto>> GetCustomer(Guid id)
         {
             _logger.LogInformation("Inside GetCustomer(int id)");
-            var dto = new CustomerDto();
-            dto.Id = Guid.NewGuid();
-            dto.FirstName = "Nathan";
-            dto.LastName = "Woodson";
-            dto.Address.Line1 = "320 Ren Road";
-            dto.Address.City = "Richmond";
-            dto.Address.State = "VA";
-            dto.Address.Zip = "23231";
+            CustomerDto dto = await _pocService.getCustomer(id.ToString());
             _logger.LogInformation("Leaving GetCustomer(int id)");
             return dto;
         }
 
         [HttpPost("poc")]
-        [ProducesResponseType(200, Type = typeof(CustomerDto))]        
-        public ActionResult<CustomerDto> CreateCustomer(CustomerDto creatCustomerDTO)
+        [ProducesResponseType(201, Type = typeof(CustomerDto))]        
+        public async Task<ActionResult<CustomerDto>> CreateCustomer(CustomerDto createCustomerDTO)
         {
             _logger.LogInformation("Inside CreateCustomer()");
-            var dto = _pocService.save(creatCustomerDTO);
-            return CreatedAtAction(nameof(GetCustomer),new { id = dto.Id}, dto);
+            CustomerDto customer = await _pocService.saveCustomer(createCustomerDTO);
+            return CreatedAtAction(nameof(GetCustomer),new { id = customer.Id}, customer);
         }
+
+        [HttpPut("poc/{id:guid}")]
+        public async Task<ActionResult<CustomerDto>> UpdateCustomer(Guid id, CustomerDto customerDto){
+            _logger.LogInformation("Inside UpdateCustomer(CustomerDto updateCustomerDTO)");
+            customerDto.Id = id;
+            CustomerDto updatedCustomer = await _pocService.updateCustomer(customerDto);
+            return CreatedAtAction(nameof(GetCustomer), new {id = updatedCustomer.Id}, updatedCustomer);
+        }
+
+        [HttpDelete("poc/{id:guid}")]
+        public async Task<ActionResult> DeleteCustomer(Guid id){
+            _logger.LogInformation("Inside DeleteCustomer(Guid id)");
+            await _pocService.deleteCustomer(id.ToString());
+            _logger.LogInformation("Leaving DeleteCustomer(Guid id)");
+            return NoContent();
+        }
+
     }
 }
